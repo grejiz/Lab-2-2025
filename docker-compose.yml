@@ -1,0 +1,77 @@
+
+services:
+  n8n:
+    build:
+      context: .
+      dockerfile: Dockerfile.n8n
+    container_name: n8n-lab2
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    env_file:
+      - .env
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - N8N_EDITOR_BASE_URL=${N8N_EDITOR_BASE_URL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows
+      - ./scripts:/scripts
+      - ./tmp/video_processing:/tmp/video_processing
+      # - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - n8n_network
+
+  auto-subtitle-api:
+    image: onerahmet/openai-whisper-asr-webservice:latest
+    container_name: whisper-api
+    ports:
+      - "9000:9000"
+    environment:
+      - ASR_MODEL=base
+      - ASR_ENGINE=openai_whisper
+    volumes:
+      - whisper_cache:/root/.cache/whisper
+    networks:
+      - n8n_network
+
+  video-processing:
+    build:
+      context: .
+      dockerfile: Dockerfile.video-processing
+    container_name: video-processing
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./scripts:/scripts
+      - ./tmp/video_processing:/tmp/video_processing
+    networks:
+      - n8n_network
+  
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_cpu 
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama 
+    environment:
+      - OLLAMA_NUM_PARALLEL=1 
+      - OLLAMA_HOST=0.0.0.0
+    networks:
+      - n8n_network
+
+networks:
+  n8n_network:
+    driver: bridge
+
+volumes:
+  n8n_data:
+  whisper_cache:
+  

@@ -1,0 +1,503 @@
+{
+  "name": "tg_flow",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.value }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        480
+      ],
+      "id": "fa2e7bcf-0a0f-4840-ab6d-1a9d99d7bf46",
+      "name": "Get a file",
+      "webhookId": "ea5f0ae5-5aa4-472a-9655-2d54aa03dfc8",
+      "credentials": {
+        "telegramApi": {
+          "id": "7eNDReepyHA2Ez8w",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8206168539:AAGKUPyUF-9Md8jC4f2wZ05WuMKqb-ge8uQ/{{ $json.result.file_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1008,
+        480
+      ],
+      "id": "8a4bda25-0687-47bd-8608-ffe5534cdb2c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "command": "=python3 /scripts/get_video.py {{ $json.value }}\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        768,
+        336
+      ],
+      "id": "fd17c8c8-8125-4a55-8e4d-c90d60baffda",
+      "name": "Download Video",
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/tmp/video_processing/video.mp4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        480
+      ],
+      "id": "c704755b-4254-492b-a491-d09494f16e07",
+      "name": "Write video on Disk",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "command": "python3 /scripts/delete_files.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        336
+      ],
+      "id": "1f01e845-3436-4464-8d4a-45ab0871c509",
+      "name": "Delete Files"
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $json[\"message\"];\nlet output = {\n  type: \"other\",\n  value: null\n};\n\nif (msg?.text) {\n  const text = msg.text.trim();\n\nif (/^(https?:\\/\\/)?(www\\.)?(youtube\\.com\\/watch\\?v=|youtu\\.be\\/)[\\w-]{11}.*$/i.test(text)) {\n    output.type = \"url\";\n    output.value = text;\n  } \n  else {\n    output.type = \"other\";\n    output.value = text;\n  }\n}\n\nelse if (msg?.video?.file_id) {\n  output.type = \"file\";\n  output.value = msg.video.file_id;\n}\n\nreturn [{ json: output }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        464
+      ],
+      "id": "d88d38f5-fb16-4312-b446-69c97d9d3623",
+      "name": "Check URL/File"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "=url",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "10412625-a42c-4c68-97b9-cd16edfde6cd"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "URL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "34cb3244-37d6-4cf8-9549-90005802539c",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "file",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "VIDEO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "950fb574-b852-46b9-951a-b0c7c47fa7d1",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "other",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "OTHER"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        448
+      ],
+      "id": "1a4cba48-438f-4dec-84a4-dfa4db22228c",
+      "name": "Switch URL/File"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/tmp/video_processing/video_subtitled.mp4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        336
+      ],
+      "id": "ec28bbb7-e632-4af2-afb9-c23710fb4162",
+      "name": "Read/Write Files from Disk",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "sendVideo",
+        "chatId": "576",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1888,
+        336
+      ],
+      "id": "fd59cdd9-8367-4125-998c-95219f18986a",
+      "name": "Send a video",
+      "webhookId": "76cfee01-e307-481c-a535-d3ef2afa19a6",
+      "credentials": {
+        "telegramApi": {
+          "id": "7eNDReepyHA2Ez8w",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "576",
+        "text": "Необходимо отправить видеофайл или ссылку на видео",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        864,
+        672
+      ],
+      "id": "cf065288-2229-491a-add4-0acda63d49f8",
+      "name": "Send message \"Not video\"",
+      "webhookId": "5d1d5fb9-3668-4b8c-931c-c578152f1543",
+      "credentials": {
+        "telegramApi": {
+          "id": "7eNDReepyHA2Ez8w",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        464
+      ],
+      "id": "173b17c7-8cbb-4584-9438-b484804b62a4",
+      "name": "Telegram Message",
+      "webhookId": "3be71a61-de39-46a1-988b-1c0527367911",
+      "credentials": {
+        "telegramApi": {
+          "id": "7eNDReepyHA2Ez8w",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "python3 /scripts/video_processor.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        336
+      ],
+      "id": "4f413852-5836-4910-954e-02c862641981",
+      "name": "Add Subtitles",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "576",
+        "text": "Произошла ошибка, повторите отправку",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2080,
+        544
+      ],
+      "id": "fe0779e1-4714-4b6b-be8a-4b7051b283e4",
+      "name": "Send message \"Error\"",
+      "webhookId": "5d1d5fb9-3668-4b8c-931c-c578152f1543",
+      "credentials": {
+        "telegramApi": {
+          "id": "7eNDReepyHA2Ez8w",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "python3 /scripts/delete_files.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        544
+      ],
+      "id": "8366fde2-0b7f-4e2e-b1c1-12ab656bcf3b",
+      "name": "Delete Files (Error)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Write video on Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Add Subtitles",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete Files (Error)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write video on Disk": {
+      "main": [
+        [
+          {
+            "node": "Add Subtitles",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete Files (Error)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check URL/File": {
+      "main": [
+        [
+          {
+            "node": "Switch URL/File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch URL/File": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send message \"Not video\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Send a video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete Files (Error)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a video": {
+      "main": [
+        [
+          {
+            "node": "Delete Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message \"Not video\"": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram Message": {
+      "main": [
+        [
+          {
+            "node": "Check URL/File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Subtitles": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete Files (Error)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Files (Error)": {
+      "main": [
+        [
+          {
+            "node": "Send message \"Error\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4009446e-0133-47b4-aa1c-7b3bd86e8af6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "69a7e882495eccbea83e2624d1461563befa97ac02aa438c0de1d08bc5f1c733"
+  },
+  "id": "Fn81zWmobnm9N43N",
+  "tags": []
+}

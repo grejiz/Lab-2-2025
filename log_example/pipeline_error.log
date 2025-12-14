@@ -1,0 +1,99 @@
+[2025-12-14 08:11:14] Running get_voice.py (attempt 1)
+[2025-12-14 08:11:14] get_voice.py finished successfully
+[2025-12-14 08:11:14] Running subtitles.py (attempt 1)
+[2025-12-14 08:11:15] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:15] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:15] Retrying subtitles.py after 2s...
+[2025-12-14 08:11:17] Running subtitles.py (attempt 2)
+[2025-12-14 08:11:17] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:17] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:17] Retrying subtitles.py after 2s...
+[2025-12-14 08:11:19] Running subtitles.py (attempt 3)
+[2025-12-14 08:11:20] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:20] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:20] subtitles.py failed after 3 attempts
+[2025-12-14 08:11:20] Pipeline aborted: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:25] Running get_voice.py (attempt 1)
+[2025-12-14 08:11:25] get_voice.py finished successfully
+[2025-12-14 08:11:25] Running subtitles.py (attempt 1)
+[2025-12-14 08:11:25] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:25] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:26] Retrying subtitles.py after 2s...
+[2025-12-14 08:11:28] Running subtitles.py (attempt 2)
+[2025-12-14 08:11:28] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:28] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:28] Retrying subtitles.py after 2s...
+[2025-12-14 08:11:30] Running subtitles.py (attempt 3)
+[2025-12-14 08:11:30] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:30] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:30] subtitles.py failed after 3 attempts
+[2025-12-14 08:11:30] Pipeline aborted: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:36] Running get_voice.py (attempt 1)
+[2025-12-14 08:11:36] get_voice.py finished successfully
+[2025-12-14 08:11:36] Running subtitles.py (attempt 1)
+[2025-12-14 08:11:36] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:36] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:36] Retrying subtitles.py after 2s...
+[2025-12-14 08:11:38] Running subtitles.py (attempt 2)
+[2025-12-14 08:11:39] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:39] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:39] Retrying subtitles.py after 2s...
+[2025-12-14 08:11:41] Running subtitles.py (attempt 3)
+[2025-12-14 08:11:41] subtitles.py failed: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+[2025-12-14 08:11:41] Traceback (most recent call last):
+  File "/scripts/video_processor.py", line 35, in run
+    subprocess.run(cmd, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
+
+[2025-12-14 08:11:41] subtitles.py failed after 3 attempts
+[2025-12-14 08:11:41] Pipeline aborted: Command '['python3', '/scripts/subtitles.py']' returned non-zero exit status 1.
